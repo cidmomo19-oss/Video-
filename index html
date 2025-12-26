@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player Style</title>
+    
+    <!-- Font mirip screenshot (Open Sans / System UI) -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Plyr -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+
+    <style>
+        /* --- VARIABLE WARNA (Mirip Screenshot) --- */
+        :root {
+            --primary-pink: #ff2442;  /* Pink kemerahan khas */
+            --bg-pink-light: #fff0f3; /* Background pink pudar */
+            --text-dark: #1a1a1a;
+            --text-grey: #888888;
+            --bg-body: #ffffff;
+        }
+
+        body {
+            font-family: 'Open Sans', -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 50px;
+        }
+
+        /* --- 1. HEADER (Bagian Atas) --- */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left { display: flex; align-items: center; gap: 15px; }
+        .burger-icon { width: 20px; height: 2px; background: #333; position: relative; }
+        .burger-icon::before, .burger-icon::after {
+            content: ''; position: absolute; width: 20px; height: 2px; background: #333;
+        }
+        .burger-icon::before { top: -6px; }
+        .burger-icon::after { top: 6px; }
+
+        .logo { font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 5px; }
+        .logo span { color: var(--primary-pink); } /* Logo warna */
+
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .btn-login {
+            background: linear-gradient(90deg, #ff5e83, #ff2442);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        /* --- 2. CONTAINER PLAYER (Mirip Screenshot) --- */
+        .main-content {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .player-container {
+            width: 100%;
+            background: #000;
+            /* Sudut melengkung halus seperti di gambar */
+            border-bottom-left-radius: 12px; 
+            border-bottom-right-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Di PC kita kasih margin dikit, di HP full width */
+        @media (min-width: 600px) {
+            .player-container {
+                margin-top: 10px;
+                border-radius: 12px;
+            }
+        }
+
+        /* Kustomisasi Plyr biar warnanya Pink */
+        .plyr { --plyr-color-main: var(--primary-pink); }
+
+        /* --- 3. INFO SECTION (Judul & Tombol) --- */
+        .info-section {
+            padding: 15px;
+        }
+
+        /* Judul Video */
+        h1#video-title {
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin: 0 0 10px 0;
+            color: #000;
+        }
+
+        /* Statistik (Like/View) ala Screenshot */
+        .stats-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 12px;
+            color: var(--text-grey);
+            margin-bottom: 15px;
+        }
+
+        .stat-item { display: flex; align-items: center; gap: 4px; }
+        
+        /* Label 'Like' Pink */
+        .like-badge {
+            background-color: var(--bg-pink-light);
+            color: var(--primary-pink);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: flex; align-items: center; gap: 4px;
+        }
+
+        /* --- 4. TOMBOL DOWNLOAD (Desain Tag Pink) --- */
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, #ff2442, #d91b36); /* Gradasi Pink Merah */
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(255, 36, 66, 0.3);
+            transition: opacity 0.2s;
+        }
+
+        .btn-download:hover { opacity: 0.9; }
+
+        .tag-static {
+            background-color: var(--bg-pink-light);
+            color: var(--primary-pink);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Error Message */
+        .error-box {
+            text-align: center; color: red; padding: 20px; display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR (Hiasan biar mirip screenshot) -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="burger-icon"></div>
+            <div class="logo">
+                <span style="font-size:20px;">⛰️</span> Stream<span>Vids</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <!-- Icon Search (SVG) -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <a href="#" class="btn-login">Login</a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <!-- PLAYER -->
+        <div class="player-container">
+            <video id="player" playsinline controls crossorigin>
+                <!-- Source dari JS -->
+            </video>
+        </div>
+
+        <!-- INFO SECTION -->
+        <div class="info-section">
+            <!-- Judul -->
+            <h1 id="video-title">Memuat Video...</h1>
+
+            <!-- Statistik Palsu (Hiasan) -->
+            <div class="stats-row">
+                <div class="like-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <span id="like-count">369</span>
+                </div>
+                <div class="stat-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span>1 tahun lalu</span>
+                </div>
+                <div class="stat-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>72.7K</span>
+                </div>
+            </div>
+
+            <!-- Tombol Action & Download -->
+            <div class="tags-row">
+                <!-- Label Statis (Hiasan biar mirip) -->
+                <span class="tag-static">HD Quality</span>
+                
+                <!-- Tombol Download Aktif -->
+                <a id="download-btn" href="#" target="_blank" class="btn-download" style="display:none;">
+                    Download Video
+                </a>
+            </div>
+            
+            <p id="error-msg" class="error-box">Video tidak ditemukan!</p>
+        </div>
+    </div>
+
+    <!-- Script HLS & Plyr -->
+    <script src="https://cdn.rawgit.com/video-dev/hls.js/18bb552/dist/hls.min.js"></script>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoId = urlParams.get('id');
+            
+            // Element UI
+            const titleEl = document.getElementById('video-title');
+            const downloadBtn = document.getElementById('download-btn');
+            const playerEl = document.getElementById('player');
+            const errorEl = document.getElementById('error-msg');
+            const likeEl = document.getElementById('like-count');
+
+            if (!videoId) {
+                titleEl.innerText = "Pilih video dari database";
+                return;
+            }
+
+            try {
+                // Load Database
+                const res = await fetch('database.json');
+                const data = await res.json();
+                const video = data.find(item => item.id === videoId);
+
+                if (video) {
+                    // Isi Data
+                    titleEl.innerText = video.judul;
+                    document.title = video.judul;
+                    
+                    // Random Like Counter (Biar kelihatan hidup kayak di screenshot)
+                    likeEl.innerText = Math.floor(Math.random() * 900) + 100;
+
+                    // Setup Download
+                    if (video.download) {
+                        downloadBtn.href = video.download;
+                        downloadBtn.style.display = 'inline-flex';
+                    }
+
+                    // Setup Player
+                    const source = video.stream;
+                    if (Hls.isSupported() && source.includes('.m3u8')) {
+                        const hls = new Hls();
+                        hls.loadSource(source);
+                        hls.attachMedia(playerEl);
+                    } else {
+                        playerEl.src = source;
+                    }
+
+                    // Init Plyr (Warna Pink)
+                    new Plyr(playerEl, {
+                        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'fullscreen'],
+                    });
+
+                } else {
+                    titleEl.innerText = "Error 404";
+                    errorEl.style.display = 'block';
+                }
+
+            } catch (err) {
+                console.error(err);
+                titleEl.innerText = "Gagal memuat data";
+            }
+        });
+    </script>
+</body>
+</html>
